@@ -135,7 +135,7 @@ const App = () => {
     const newGet_Registerd_User_By_Email_Query =
       Get_Registerd_User_By_Email_Query.replace(
         "$email",
-        `"${data.email || ""}"`
+        `"${data.email.toLowerCase() || ""}"`
       );
     setQuery(newGet_Registerd_User_By_Email_Query);
     setQueryType("Get_Registerd_User_By_Email_Query");
@@ -143,11 +143,11 @@ const App = () => {
 
   const loginResult = (data) => {
     if (data) {
-      if (data.email.includes("@happiestminds.com")) {
+      if (data.email.toLowerCase().includes("@happiestminds.com")) {
         if (data.password === loginData?.password) {
           const newGet_Users_By_Email_Query = Get_Users_By_Email_Query.replace(
             "$email",
-            `"${data.email}"`
+            `"${data.email.toLowerCase()}"`
           );
 
           fetch(endpoint, {
@@ -203,7 +203,7 @@ const App = () => {
     const newGet_Registerd_User_By_Email_Query =
       Get_Registerd_User_By_Email_Query.replace(
         "$email",
-        `"${userData.email || ""}"`
+        `"${userData.email.toLowerCase() || ""}"`
       );
     setQuery(newGet_Registerd_User_By_Email_Query);
     setQueryType("Get_Registerd_User_By_Email_Query");
@@ -215,12 +215,12 @@ const App = () => {
       NotificationConfig.warning("User already registered. Please Login");
       setIsLoading(false);
     } else {
-      if (registerData.email.includes("@happiestminds.com")) {
+      if (registerData.email.toLowerCase().includes("@happiestminds.com")) {
         const query = JSON.stringify({
           query: `mutation MyMutation {
           insert_ss_registeredUsers_one(object: {confirmPassword: "${
             registerData.confirmPassword
-          }", email: "${registerData.email}", password: "${
+          }", email: "${registerData.email.toLowerCase()}", password: "${
             registerData.password
           }", address: "${registerData.address.replace(
             /[\r\n]+/gm,
