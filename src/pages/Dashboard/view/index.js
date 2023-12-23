@@ -136,7 +136,7 @@ const Dashboard = ({ user, namesList, endpoint, Names_Get_Query }) => {
 
   const onButtonClick = () => {
     setIsButtonDisable(true);
-    const randomNo = Math.floor(Math.random() * (list.length - 1) + 1);
+    const randomNo = Math.floor(Math.random() * list.length);
     setRandomNumber(randomNo);
     const selUser = list[randomNo]?.name;
     const selUserEmail = list[randomNo]?.email;
