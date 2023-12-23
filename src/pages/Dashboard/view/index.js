@@ -213,9 +213,9 @@ const Dashboard = ({ user, namesList, endpoint, Names_Get_Query }) => {
     <div id="main" className="mainWrapper">
       <div className="main">
         <div className="secretSantaWrapper">
-          {console.log("isUserRegistered -", isUserRegistered)}
+          {/* {console.log("isUserRegistered -", isUserRegistered)}
           {console.log("matchList?.secretSanta -", matchList?.secretSanta)}
-          {console.log("randomNumber -", randomNumber)}
+          {console.log("randomNumber -", randomNumber)} */}
           <img
             className={
               matchList?.secretSanta || randomNumber

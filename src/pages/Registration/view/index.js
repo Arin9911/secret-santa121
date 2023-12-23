@@ -120,7 +120,7 @@ const RegistrationForm = ({ onRegister, isLoading }) => {
                 id="confirmPassword"
                 name="confirmPassword"
                 value={formData.confirmPassword}
-                placeholder="Please enter the same password..."
+                placeholder="Please re-enter the password..."
                 onChange={handleChange}
               />
               <div className="error">{errors.confirmPassword}</div>

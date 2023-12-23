@@ -42,6 +42,13 @@ let Get_Registerd_User_By_Email_Query = `{
   }
 }`;
 
+let Get_Users_By_Email_Query = `{
+  ss_allUsers_by_pk(email: $email) {
+    email
+    name
+  }
+}`;
+
 // let Post_Registerd_User_Query = `{
 //   insert_ss_registeredUsers_one(object: $object) {
 //     confirmPassword
@@ -115,10 +122,7 @@ const App = () => {
               loginResult(data?.data?.ss_registeredUsers_by_pk);
             else if (window.location.pathname === "/register")
               registerResult(data?.data?.ss_registeredUsers_by_pk);
-          } else if (queryType === "Update_Registerd_User_By_Email_Query") {
-            console.log("updated register user", data);
-          } else if (queryType === "Post_Registerd_User_Query")
-            console.log("Registered user", data);
+          }
         });
       setQuery(null);
     }
@@ -139,21 +143,46 @@ const App = () => {
 
   const loginResult = (data) => {
     if (data) {
-      if (data?.email.includes("@happiestminds.com")) {
+      if (data.email.includes("@happiestminds.com")) {
         if (data.password === loginData?.password) {
-          // Save user data to local storage
-          setNamesList(
-            namesList.filter((item) => {
-              if (item.email === data?.email) {
-                setUser({ ...loginData, ["name"]: item.name });
-                localStorage.setItem(
-                  "user",
-                  JSON.stringify({ ...loginData, ["name"]: item.name })
-                );
-              } else return item;
-            })
+          const newGet_Users_By_Email_Query = Get_Users_By_Email_Query.replace(
+            "$email",
+            `"${data.email}"`
           );
-          NotificationConfig.success("User logged in successfully");
+
+          fetch(endpoint, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "x-hasura-admin-secret":
+                "OkSFKkndGHnmSl6x2ePbxuiW6wNcyfHR86e7Va6K1RmnLq9udZEYR8ECadLNfsjM",
+            },
+            body: JSON.stringify({
+              query: newGet_Users_By_Email_Query,
+            }),
+          })
+            .then((response) => {
+              if (response.status >= 400) {
+                throw new Error("Error fetching data");
+              } else {
+                return response.json();
+              }
+            })
+            .then((data) => {
+              // Save user data to local storage
+              setUser({
+                ...loginData,
+                ["name"]: data.data.ss_allUsers_by_pk.name,
+              });
+              localStorage.setItem(
+                "user",
+                JSON.stringify({
+                  ...loginData,
+                  ["name"]: data.data.ss_allUsers_by_pk.name,
+                })
+              );
+              NotificationConfig.success("User logged in successfully");
+            });
         } else
           NotificationConfig.error("User login failed. Please verify password");
       } else
@@ -189,7 +218,14 @@ const App = () => {
       if (registerData.email.includes("@happiestminds.com")) {
         const query = JSON.stringify({
           query: `mutation MyMutation {
-          insert_ss_registeredUsers_one(object: {confirmPassword: "${registerData.confirmPassword}", email: "${registerData.email}", password: "${registerData.password}", address: "${registerData.address}", wish: "${registerData.wish}"}) {
+          insert_ss_registeredUsers_one(object: {confirmPassword: "${
+            registerData.confirmPassword
+          }", email: "${registerData.email}", password: "${
+            registerData.password
+          }", address: "${registerData.address.replace(
+            /[\r\n]+/gm,
+            " "
+          )}", wish: "${registerData.wish}"}) {
             confirmPassword
             email
             password
